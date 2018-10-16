@@ -82,14 +82,14 @@ legend('show', 'Location', 'southoutside',legend_values);
  
 %% Split the categorical dataset into train and test. The train set is going to be used for model selection for both random forest and naive bayes. The test set is going to be used to compare the final 2 models and it will not be used during the model selection phase. 
 %categorical
-rng('default');
+rng(1); % for reproducibility
 First_split = cvpartition(odata.acceptability,'Holdout',0.2);
 trainCat = odata(training(First_split),:);
 testCat = odata(test(First_split),:);
 
 %numerical - since the independent variables are ordinal values, we can
 %replace them by numbers???? need to double check the impact
-rng('default');
+rng(1); % for reproducibility
 First_split = cvpartition(numeric_table.acceptability,'Holdout',0.2);
 trainNum = numeric_table(training(First_split),:);
 testNum = numeric_table(test(First_split),:);
