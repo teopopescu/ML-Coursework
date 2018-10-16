@@ -88,7 +88,7 @@ trainCat = odata(training(First_split),:);
 testCat = odata(test(First_split),:);
 
 %numerical - since the independent variables are ordinal values, we can
-%replace them by numbers. 
+%replace them by numbers???? need to double check the impact
 rng('default');
 First_split = cvpartition(numeric_table.acceptability,'Holdout',0.2);
 trainNum = numeric_table(training(First_split),:);
@@ -99,6 +99,8 @@ writetable(trainCat,'trainCat.csv');
 writetable(testCat,'testCat.csv');
 writetable(trainNum,'trainNum.csv');
 writetable(testNum,'testNum.csv');
+
+
 
 
 
