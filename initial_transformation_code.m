@@ -50,7 +50,7 @@ parallelcoords(indv,'Group',group,'Labels',labels,'LineWidth',2);
 % persons, high lugage boot and high safety. 
 
 %% Means by Group
-numeric_table=[array2table(indv) array2table(double(group))];
+numeric_table=[array2table(indv) array2table(group)];
 VarNames={'buying','maint','doors','persons','lug_boot','safety','acceptability'};
 numeric_table.Properties.VariableNames = VarNames;
 
@@ -77,16 +77,18 @@ labels=labels';
  'FontSize', 12); 
 % 
 % % Legend properties 
- legend('show', 'Location', 'southoutside')
+legend_values={'unacc','acc','good','vgood'};
+legend('show', 'Location', 'southoutside',legend_values);
  
- %% Split the categorical dataset into train and test. The train set is going to be used for model selection for both random forest and naive bayes. The test set is going to be used to compare the final 2 models and it will not be used during the model selection phase. 
+%% Split the categorical dataset into train and test. The train set is going to be used for model selection for both random forest and naive bayes. The test set is going to be used to compare the final 2 models and it will not be used during the model selection phase. 
 %categorical
 rng('default');
 First_split = cvpartition(odata.acceptability,'Holdout',0.2);
 trainCat = odata(training(First_split),:);
 testCat = odata(test(First_split),:);
 
-%numerical
+%numerical - since the independent variables are ordinal values, we can
+%replace them by numbers. 
 rng('default');
 First_split = cvpartition(numeric_table.acceptability,'Holdout',0.2);
 trainNum = numeric_table(training(First_split),:);
