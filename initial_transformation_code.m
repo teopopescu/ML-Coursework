@@ -2,7 +2,7 @@
 clear all
 close all
 %% Create train and test data
-[train_num,test_num,train_cat,test_cat,odata] = splitdata('original_car_data.csv','HoldOut',0.4)
+[train_num,test_num,train_cat,test_cat,odata] = splitdata('original_car_data.csv','HoldOut',0.2)
 %% check unique rows 
 height(unique(odata))
 %% Exploratory Data Analysis
@@ -53,10 +53,12 @@ for i=1:6
     subplot(2,3,i);
     bar(tbl,'stacked')
     xticklabels(rowNames);
-    legend(colNames,'Location','northwestoutside');
+    %legend(colNames,'Location','northwestoutside');
     title(odata.Properties.VariableNames(i));
     hold on
 end
+%% target variable viz
+histogram(odata.acceptability);
 
 
 

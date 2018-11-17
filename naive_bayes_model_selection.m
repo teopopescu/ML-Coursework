@@ -2,7 +2,7 @@
 clear all
 close all
 %% Read the numerical train dataset for Naive Bayes Model Selection
-nb_ms=readtable('trainNum.csv');
+nb_ms=readtable('training_num80.csv');
 %% specify that the last column is ordinal categorical data
 avalues={'unacc','acc','good','vgood'};
 nb_ms.acceptability=categorical(nb_ms.acceptability,avalues,'Ordinal',true);
@@ -118,7 +118,7 @@ best_model;
 writetable(final_nb_models,'final_nb_models.csv');
 %% Train the model on the entire train set and make final predictions on the test set. 
 % Read the numerical test dataset for Naive Bayes Model Selection
-test_nb=readtable('testNum.csv');
+test_nb=readtable('test_num80.csv');
 % specify that the last column is ordinal categorical data
 test_nb.acceptability=categorical(test_nb.acceptability,avalues,'Ordinal',true);
 %split predictors and target variables
@@ -127,12 +127,15 @@ Ytr=table2array(nb_ms(:,7));
 Xv=table2array(test_nb(:,1:6));
 Yv=table2array(test_nb(:,7));
 %Train the model with kernel parameters
+startt=cputime;
 Mdl = fitcnb(Xtr,Ytr,...
             'ClassNames',class_names,...
             'Prior',prior,...
             'DistributionNames','kernel',...
-            'Width',0.4288,...
+            'Width',0.4293,...
             'Kernel','box');  
+endt=cputime;
+training_time=endt-startt;
 % Predict Results
 [label,Posterior,Cost] = predict(Mdl,Xv);    
 % Evaluate Model
@@ -142,5 +145,6 @@ predictions=array2table([Yv label]);
 VarNames={'target','predictions'};
 predictions.Properties.VariableNames = VarNames;
 writetable(predictions,'final_results_nb.csv');
+
 
 

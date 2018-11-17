@@ -24,17 +24,18 @@
     
 %% Read the numerical train dataset for Random Forest Model Selection
 
-%Create train and test data
-[train_num,test_num,train_cat,test_cat] = splitdata('original_car_data.csv','HoldOut',0.4)
+%read the data
+train_rf=readtable('training_num80.csv');
+test_rf=readtable('test_num80.csv');
 
 %Train
-[trainedClassifier, validationAccuracy] = trainRandomForestClassifier(train_num)
+[trainedClassifier, validationAccuracy] = trainRandomForestClassifier(train_rf)
 
  % Predict Results
-test_features = table2array(test_num(:,1:6));
-test_labels = test_num(:,7);
+test_features = table2array(test_nb(:,1:6));
+test_labels = test_nb(:,7);
      
-predicted_labels = trainedClassifier.predictFcn(test_num) % <-- i don't think this is right. 
+predicted_labels = trainedClassifier.predictFcn(test_rf) % <-- i don't think this is right. 
     
 % Hyperparameter tuning; 
 
