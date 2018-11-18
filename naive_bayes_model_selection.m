@@ -136,11 +136,23 @@ Mdl = fitcnb(Xtr,Ytr,...
             'Kernel','box');  
 endt=cputime;
 training_time=endt-startt;
-% Predict Results
-[label,Posterior,Cost] = predict(Mdl,Xv);    
-% Evaluate Model
-[ac_final, ce_final]=performance_metrics(Mdl, Xv,Yv, Posterior);
-%% save the results of predictions
+% Predict Result on train set
+[label,Posterior,Cost] = predict(Mdl,Xtr);
+% Evaluate Model on train set
+[ac_train_final, ce_train_final]=performance_metrics(Mdl, Xtr,Ytr, Posterior);
+
+% save the results of predictions for test set
+predictions=array2table([Ytr label]);
+VarNames={'target','predictions'};
+predictions.Properties.VariableNames = VarNames;
+writetable(predictions,'final_results_train_nb.csv');
+
+% Predict Result on test set
+[label,Posterior,Cost] = predict(Mdl,Xv);
+% Evaluate Model on test set
+[ac_test_final, ce_test_final]=performance_metrics(Mdl, Xv,Yv, Posterior);
+
+%% save the results of predictions for test set
 predictions=array2table([Yv label]);
 VarNames={'target','predictions'};
 predictions.Properties.VariableNames = VarNames;
