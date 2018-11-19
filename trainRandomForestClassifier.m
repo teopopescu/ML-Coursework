@@ -46,7 +46,7 @@ function [trainedClassifier, validationAccuracy] = trainRandomForestClassifier(t
 % Extract predictors and response
 % This code processes the data into the right shape for training the
 % model.
-inputTable = readtable('training_num60.csv');
+inputTable = trainingData;
 predictorNames = {'buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'};
 predictors = inputTable(:, predictorNames);
 response = inputTable.acceptability;
@@ -76,7 +76,8 @@ trainedClassifier.About = 'This is a Random Forest trained model applied to the 
 % Extract predictors and response
 % This code processes the data into the right shape for training the
 % model.
-inputTable = readtable('training_num60.csv');
+
+inputTable=trainingData;
 predictorNames = {'buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'};
 predictors = inputTable(:, predictorNames);
 response = inputTable.acceptability;

@@ -2,7 +2,7 @@
 clear all
 close all
 %% Create train and test data
-[train_num,test_num,train_cat,test_cat,odata] = splitdata('original_car_data.csv','HoldOut',0.2)
+[train_num,test_num,train_cat,test_cat,odata] = splitdata('original_car_data.csv','HoldOut',0.4)
 %% check unique rows 
 height(unique(odata))
 %% Exploratory Data Analysis
@@ -43,22 +43,40 @@ labels=labels';
 % % Legend properties 
 legend_values={'unacc','acc','good','vgood'};
 legend('show', 'Location', 'southoutside',legend_values); 
+%% We can plot histograms for each variable since they are all ordinal categorical
+for i=1:6
+    % extract the data for each class & convert to categorical array
+    cat_array_unacc=transpose(table2array(odata(odata.acceptability=='unacc',i)));
+    cat_array_acc=transpose(table2array(odata(odata.acceptability=='acc',i)));
+    cat_array_good=transpose(table2array(odata(odata.acceptability=='good',i)));
+    cat_array_vgood=transpose(table2array(odata(odata.acceptability=='vgood',i)));
+    % plot
+    figure(i),
+    h1 = histogram(cat_array_unacc);
+    hold on
+    h2 = histogram(cat_array_acc);
+    hold on 
+    h3 = histogram(cat_array_good);
+    hold on 
+    h4 = histogram(cat_array_vgood);
+    hold on
+
+    legend({'unacc','acc','good','vgood'},'Location','northwestoutside');
+    title(odata.Properties.VariableNames(i));
+end
 
 %%
-figure(1)
-for i=1:6
-    [tbl,chi2,p,labels]=crosstab(table2array(odata(:,i)),odata.acceptability);
-    rowNames = transpose(labels(:,1));
-    colNames = transpose(labels(:,2));
-    subplot(2,3,i);
-    bar(tbl,'stacked')
-    xticklabels(rowNames);
-    %legend(colNames,'Location','northwestoutside');
-    title(odata.Properties.VariableNames(i));
-    hold on
-end
-%% target variable viz
-histogram(odata.acceptability);
+[tbl,chi2,p,labels]=crosstab(odata.buying,odata.acceptability);
+rowNames = transpose(labels(:,1));
+colNames = transpose(labels(:,2));
+bar(tbl,'stacked')
+xticklabels(rowNames);
+legend(colNames,'Location','northwestoutside');
+title(odata.Properties.VariableNames(1));
+
+%% 
+test=odata.buying;
+test2=odata.b(:,1)
 
 
 
