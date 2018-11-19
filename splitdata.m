@@ -1,4 +1,6 @@
+
 function [outputArg1,outputArg2, outputArg3, outputArg4,outputArg5] = splitdata(inputArg1,inputArg2, inputArg3)
+
 %This function takes 3 arguments: a filename, a type of partition
 %and the test split ratio (e.g. 0.3 turning set into 70% training data and 30%
 %test data and produces 4 files: 
@@ -29,7 +31,9 @@ original_data.safety=categorical(original_data.safety,svalues,'Ordinal',true);
 avalues={'unacc','acc','good','vgood'};
 original_data.acceptability=categorical(original_data.acceptability,avalues,'Ordinal',true);
 
+
 rng(1);
+
 cvpt = cvpartition(original_data.acceptability, inputArg2, inputArg3)
 trainingIdx = training(cvpt)
 testIdx = test(cvpt)
@@ -56,11 +60,13 @@ writetable(test_data_num, ['test_num' num2str(100-inputArg3*100) '.csv'])
 writetable(training_data,['training_cat' num2str(100-inputArg3*100) '.csv'])
 writetable(test_data,['test_cat' num2str(100-inputArg3*100) '.csv'])
 
+
 outputArg1 = training_data_num;
 outputArg2 = test_data_num;
 outputArg3 = training_data;
 outputArg4 = test_data;
 outputArg5 = original_data;
+
 
 end
 

@@ -76,6 +76,7 @@ trainedClassifier.About = 'This is a Random Forest trained model applied to the 
 % Extract predictors and response
 % This code processes the data into the right shape for training the
 % model.
+
 inputTable=trainingData;
 predictorNames = {'buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'};
 predictors = inputTable(:, predictorNames);
