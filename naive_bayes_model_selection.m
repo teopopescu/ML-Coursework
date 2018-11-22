@@ -74,7 +74,7 @@ for m=1:6
             nb_predict_evaluate_test;
     end
         endt=cputime;
-        nb_cv_performance;   
+        bn_cv_performance;   
 end; 
 %% Add the results to the original table
 nb_perfm_type_conversion;
