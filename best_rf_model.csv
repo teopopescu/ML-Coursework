@@ -1,0 +1,2 @@
+number_of_trees,leafs,number_of_splits,number_of_predictors,accuracy,time
+50,2,200,5,0.979031091829357,0.375

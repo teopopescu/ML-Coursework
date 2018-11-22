@@ -24,7 +24,7 @@ num_variables_to_sample=[10 5 15];
 
 %Hyperparameters
 %-nb of trees x
-% -MaxNumSplits -Maximal number of decision splits 
+% -MaxNumSplits -Maximal number of decision splits X
 %-MinLeafSize - minimum number of observations per tree leaf
 %-NumVariablesToSample-Number of predictors to select at random for each split
 
@@ -100,8 +100,7 @@ final_train_time = final_training_end_time - final_training_start_time;
 view(finalMdl.Trees{1},'Mode','graph')
 
 %final model accuracy
-final_model_accuracy=(1-oobError(finalMdl,...
-    'Mode','Ensemble'));
+final_model_accuracy=(1-oobError(finalMdl,...'Mode','Ensemble'))
 
 % Predict final Result on train set
   [Yfit,scores] = oobPredict(finalMdl);
