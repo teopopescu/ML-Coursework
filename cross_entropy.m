@@ -1,4 +1,4 @@
-function [ce] = cross_ent(Mdl,Yv,Posterior)
+function [ce] = cross_entropy(Mdl,Yv,Posterior)
 %UNTITLED Summary of this function goes here
 % %2) Cross entropy to compare RF and NB
     %Step 1) Transform the original target vector to dummy vectors
