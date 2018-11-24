@@ -17,14 +17,12 @@ train_rf.acceptability=categorical(train_rf.acceptability,avalues,'Ordinal',true
 %setting a list of hyperparameters
 nb_of_trees=[10 20 40 50];
 max_num_splits=[100 200 50];
-min_leaf_size =[ 2 3 4 5];
-num_variables_to_sample=[10 5 15];
-
-%TPL = number of trees; number of leafs (depth); number of predictors
+min_leaf_size =[2 3 4 5];
+num_variables_to_sample=[2 4 6];
 
 %Hyperparameters
 %-nb of trees x
-% -MaxNumSplits -Maximal number of decision splits X
+% -MaxNumSplits -Maximal number of decision splits 
 %-MinLeafSize - minimum number of observations per tree leaf
 %-NumVariablesToSample-Number of predictors to select at random for each split
 
@@ -42,18 +40,21 @@ for trees = nb_of_trees
    start_time=cputime;
     Mdl = TreeBagger(trees, features,labels,...
     'Method','classification',...
-    'ClassNames', categorical({'acc'; 'good'; 'unacc'; 'vgood'}),...
+    'ClassNames', categorical({'unacc','acc','good','vgood'}),...
     'MaxNumSplits', splits, ...
     'NumVariablesToSample', nb_predictors, ...
     'MinLeafSize', leaf_size, ...
+    'SplitCriterion', 'deviance', ...
     'OOBPrediction','on');
 end_time=cputime;
 training_time=end_time-start_time;
 
-%OOBPredict
-  [Yfit,scores] = oobPredict(Mdl);
-     %predict, store OOB error for each model in a table
-     
+%%predict, store OOB error for each model in a table
+[Yfit,scores] = oobPredict(Mdl);
+
+% Evaluate Model on train set
+[ce_train_rf]=cross_ent(Mdl,table2array(labels), scores);
+
 %No cross-validation needed as random forest chooses a bagged subset of input data at random
 % setting NumPredictorsToSample to any value but 'all' enables TreeBagger to behave like RandomForest     
      
@@ -64,6 +65,7 @@ training_time=end_time-start_time;
      number_of_predictors = [number_of_predictors;nb_predictors];
      accuracy=[accuracy; (1-oobError(Mdl,...
          'Mode','Ensemble'))];
+     ce=[ce;ce_train_rf];
      time=[time;training_time];
             end
         end
@@ -72,8 +74,8 @@ end
 
 %%Merge results into one table
 rf_perfm_type_conversion;
-rf_models = [number_of_trees leafs number_of_splits number_of_predictors accuracy time]
-rf_models = sortrows(rf_models,5,{'descend'});
+rf_models = [number_of_trees leafs number_of_splits number_of_predictors accuracy ce time]
+rf_models = sortrows(rf_models,6 ,{'descend'});
 writetable(rf_models, 'rf_models.csv')
 
 %Take the model with highest accuracy and store it separately;
@@ -100,7 +102,8 @@ final_train_time = final_training_end_time - final_training_start_time;
 view(finalMdl.Trees{1},'Mode','graph')
 
 %final model accuracy
-final_model_accuracy=(1-oobError(finalMdl,...'Mode','Ensemble'))
+final_model_accuracy=(1-oobError(finalMdl,...
+    'Mode','Ensemble'));
 
 % Predict final Result on train set
   [Yfit,scores] = oobPredict(finalMdl);
@@ -121,34 +124,27 @@ VarNames = {'target','test_predictions'};
 final_results.Properties.VariableNames = VarNames;
 writetable(final_results,'final_labels_Random_Forest.csv');
 
+%Confusion Matrix
 
-%---------------------------------
+%confusion matrix between test labels and predictions
+confusion_matrix = confusionmat(test_labels,test_Yfit);
+confusionchart(confusion_matrix);
+%confusion_matrix_chart= confusionchart(categorical(test_labels),categorical(test_Yfit), ...
+ %   'Title','My Title', ...
+  %  'RowSummary','row-normalized', ...
+   % 'ColumnSummary','column-normalized');
 
-%Feature importance
-%NO ! Principal Component Analysis (NB used corrcoef for analysis); <-- done on the trainedRandomForest;
-% 2 models; one with all and one with 3-4 parameters; 
-%have an optimized model 
-%NO NEED for crossv-valid sa it's done on the for loop
+%%%% Automatic Hyperparameter Optimization
 
+%%predict, store OOB error for each model in a table
+%[Yfit,scores] = oobPredict(Mdl);
 
-% Save the results against their targets in a file
-%predictions= [test_labels array2table(predicted_labels)];
-%writetable(predictions,'final_results_random_forest.csv');
+% Evaluate Model on train set
+%[ce_train_rf]=cross_ent(Mdl,table2array(labels), scores);
 
-%Further Evaluation
-    %accuracy;
-    %cross-entropy; 
-    
-    %--------------future work;
+%save the results into one table
+ 
    
-    %produce diagram of accuracy distribution
-    
-    %Confusion Matrix
-   
-
-    %Future work: with increaed computational capacity, more
-    %hyperparameters could be tested;
-    
-%delete training and test files after process is complete 
-
+%Future work: with increaed computational capacity, more hyperparameters could be tested;
+ 
 

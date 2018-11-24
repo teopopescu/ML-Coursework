@@ -3,4 +3,5 @@ leafs =[];
 number_of_splits=[];
 number_of_predictors = [];
 accuracy = [];
+ce=[];
 time=[];
