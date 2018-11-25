@@ -1,1 +1,0 @@
-[train_num,test_num,train_cat,test_cat] = splitdata('original_car_data.csv', 'HoldOut', 0.4)

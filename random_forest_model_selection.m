@@ -13,10 +13,10 @@ categories={'unacc','acc','good','vgood'};
 train_set.acceptability=categorical(train_set.acceptability,categories,'Ordinal',true);
 
 %Hyperparameter setup for performing Grid Search
-nb_of_trees=[10 20 40 50]; %Number of trees
-max_num_splits=[100 200 50]; % Maximal number of decision splits
+nb_of_trees=[10 20 75 100]; %Number of trees
+max_num_splits=[100 200 300]; % Maximal number of decision splits
 min_leaf_size =[2 3 4 5]; %Minimum number of observations per tree leaf
-num_variables_to_sample=[2 4 6]; %Number of predictors to select at random for each split.
+num_variables_to_sample=[1 3 6]; %Number of predictors to select at random for each split.
 
 random_forest_initialize_hyperparameters;
 for trees = nb_of_trees
