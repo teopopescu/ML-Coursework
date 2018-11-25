@@ -78,7 +78,7 @@ test_rf=readtable('test_num80.csv');
 final_training_start_time=cputime;
 bestMdl =  TreeBagger(table2array(best_rf_model(1,1)), features,labels,...
     'Method','classification',...
-    'ClassNames', categorical({'acc'; 'good'; 'unacc'; 'vgood'}),...
+    'ClassNames', categorical({'unacc','acc','good','vgood'}),...
     'MaxNumSplits', table2array(best_rf_model(1,3)), ...
     'NumVariablesToSample', table2array(best_rf_model(1,4)), ...
     'MinLeafSize', table2array(best_rf_model(1,2)), ...
@@ -101,23 +101,27 @@ final_model_accuracy=(1-oobError(bestMdl,...
 
 %%Predict Results on the test set
 %Split test set into features and labels
-test_features = table2array(test_rf(:,1:6));
-test_labels = table2array(test_rf(:,7));
+test_features = test_rf(:,1:6);
+test_labels = test_rf(:,7);
 
 [test_Yfit,test_scores] = predict(bestMdl,test_features);
 
-final_results = array2table([test_labels test_Yfit]);
+final_results = [test_labels test_Yfit];
 VarNames = {'target','test_predictions'};
 final_results.Properties.VariableNames = VarNames;
 writetable(final_results,'Random_Forest_Final_Labels.csv');
 
-%Compute final accuracy and cross entropy;
-
-accuracy_test_final= error(bestMdl,test_features,test_Yfit);
-[ce_test_final] = cross_entropy(bestMdl,table2array(test_labels), test_scores);
+%Compute final accuracy
+err = error(bestMdl,test_features,test_Yfit);
+accuracy_test_final= 1-mean(err);
 
 %Confusion Matrix between target test labels and predicted test labels
-confusion_matrix = confusionmat(test_labels,test_Yfit);
-plotconfusion(categorical(test_labels),categorical(test_Yfit));
+confusion_matrix = confusionmat(table2array(test_labels),test_Yfit);
+plotconfusion(categorical(table2array(test_labels)),categorical(test_Yfit));
+
+%Compute final cross-entropy
+test_rf.acceptability=categorical(test_rf.acceptability,categories,'Ordinal',true);
+[ce_test_final] = cross_entropy(bestMdl,test_rf.acceptability, test_scores);
+
 
 
